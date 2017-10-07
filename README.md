@@ -31,7 +31,7 @@ Implement both auctions in order to demonstrate your understanding of what makes
 ## Testing 
 You can verify that your smart contract is implemented correctly with `truffle test`. Be sure to have a testrpc server running in a separate terminal.
 
-Refreshed: in an empty terminal, run `testrpc` to initialize a default testrpc server. If you get errors, read the [_testrpc_ documentation](https://github.com/ethereumjs/testrpc)
+Refresher: in an empty terminal, run `testrpc` to initialize a default testrpc server. If you get errors, read the [_testrpc_ documentation](https://github.com/ethereumjs/testrpc).
 
 ### Truffle Console
 If you're having trouble passing the tests and would like to play around with the contracts manually:
