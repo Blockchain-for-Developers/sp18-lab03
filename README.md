@@ -1,41 +1,40 @@
-# Developer Environment Setup
-Your task is simply to output the following in your console via the tools/frameworks below:
+# Attack the Auction
+Welcome to the Blockchain for Developers DeCal's third assignment. You'll be getting acclimated with the external calls, inheritance, and smart contract security.
 
-    "Hello World"
+## Homework Instructions
+Your task is to implement both `BadAuction.sol` and `GoodAuction.sol` such that they are each, respectively, vulnerable and protected from a push/pull reentrancy attack. 
 
-To do so you must:
-1. Download this repository
-2. Download the required software dependencies
-3. Compile the provided `Greeter.sol` "Hello World" smart contract
-4. Deploy the smart contract to a test blockchain
-5. Use `truffle console` then call the deployed contract's `greet()` function
+`Poisoned.sol` and `NotPoisoned.sol` are both players in an adversarial system. Both can conduct external calls to the auctions in order to place bids. While `NotPoisoned.sol` will act as expected, `Poisoned.sol` will attempt to take advantage of `BadAuction.sol`'s pull-based paradigm.
 
-**All work can be done by `cd`ing into ex1's root directory (this one).**
+Implement both auctions in order to demonstrate your understanding of what makes smart contracts vulnerable and how to secure them.
 
-Note: `contract/Greeter.sol` is the same as *Homework 1*'s **ex1**. As such, it has been completed for you.
+**All work should be done in contracts/BadAuction.sol and contracts/GoodAuction.sol**
 
-## First, a brief introduction on each of the tools we will be using and the versions that you will need to download:
-### Windows Users go [HERE](http://truffleframework.com/tutorials/how-to-install-truffle-and-testrpc-on-windows-for-blockchain-development)
+## Rules
+* In any situation, a bidder with a lower or the same bid than the current highest bidder should have no effect on the contract
+	* The contract should return `false` in this situation
+	* The bidder should still be able to get their money back
+* A bidder with a higher bid should:
+	* Be able to displace the previous highest bidder if the previous highest bidder were not poisoned
+		* The contract should return `true` in this situation
+	* Be able to displace the previous highest bidder if bidding at a good auction
+		* The contract should return `false` in this situation
+	* Not be able to displace the previous highest bidder if bidding on a bad auction and the previous highest bidder was poisoned
+		* The bidder should still be able to get their money back
+* A previous highest bidder should only get back an amount equivalent to what their bet (the previous highest bet) was; no more, no less
 
-1. [Node.js](https://nodejs.org/en/) (v8.4.0 or greater)— a Javascript runtime for easily building fast and scalable network applications
-2. Npm (v5.0.3 or greater) — Node.js’ package ecosystem. If you already have Node.js you can simply type: `npm update` into your terminal.
-3. [Truffle Framework](http://truffleframework.com/) (v3.4.9 or greater) — `npm install -g truffle` *note the -g tag installs truffle globally so don’t worry about being in any specific directory. ***if you get permission errors, run the above command as root/admin. Truffle is a development framework for Ethereum that has built in smart contract compilation, linking, and deployment. These are some of the hardest technical concepts for a Solidity developer.
-4. [Testrpc](https://github.com/ethereumjs/testrpc) (v4.1.1 or greater) — `npm install -g ethereumjs-testrpc` This will be our blockchain on which we will deploy and mine your contracts from truffle. Specifically testrpc is an Ethereum client for testing and developing. It comes with the ability to play with accounts pre-filled with millions of dollars worth of Ether (sorry you can’t keep it) and customize everything from hostnames to gasPrice.
-
-## Instructions
-
-1. In an empty terminal, run `testrpc` to initialize a default testrpc server. If you get errors, read the [Testrpc documentation](https://github.com/ethereumjs/testrpc) 
-2. In a separate terminal, compile your Greeter smart contract with `truffle compile`. [Truffle documentation](http://truffleframework.com/)
+## Minimum Requirements
+* All fifteen tests should pass
+* Each auction file should follow the requirements set by the skeleton code (as well as the `AuctionInterface.sol`)
 
 ## Testing 
 
-You can verify that your smart contract is implemented correctly with `truffle test`.
-Be sure to have a testrpc server running in a separate terminal.
+You can verify that your smart contract is implemented correctly with `truffle test`. Be sure to have a testrpc server running in a separate terminal.
 
-## Truffle Console
+Refreshed: in an empty terminal, run `testrpc` to initialize a default testrpc server. If you get errors, read the [Testrpc documentation](https://github.com/ethereumjs/testrpc)
 
-Once your greeter passes the test:
+### Truffle Console
+
+If you're having trouble passing the tests and would like to play around with the contracts manually:
 1. Run `truffle migrate`.
-2. Run `truffle console`. This will open up a Node JavaScript console that is connected to your testrpc server. Find a way to reference the Greeter smart contract that you deployed and call both the **Constructor** and **`greet()`** functions. [Truffle console docs](http://truffleframework.com/docs/getting_started/console)
-
-If your greeter returns "Hello World!" when prompted, then you have successfully completed the exercise. However, know that moving forward in the course, you will need to maximize your ability and knowledge of the tools and frameworks used in Ethereum Development.
+2. Run `truffle console`. This will open up a Node JavaScript console that is connected to your testrpc server.
