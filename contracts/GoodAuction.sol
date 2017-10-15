@@ -7,7 +7,7 @@ contract GoodAuction is AuctionInterface {
 	/* New data structure, keeps track of refunds owed to ex-highest bidders */
 	mapping(address => uint) refunds;
 
-	/* Bid function, shifts to push paradigm
+	/* Bid function, shifts to pull paradigm
 	 * Must return true on successful send and/or bid, bidder
 	 * reassignment
 	 * Must return false on failure and allow people to
@@ -17,7 +17,7 @@ contract GoodAuction is AuctionInterface {
 		// YOUR CODE HERE
 	}
 
-	/* New withdraw function, shifts to push paradigm */
+	/* New withdraw function, shifts to pull paradigm */
 	function withdrawRefund() external returns(bool) {
 		// YOUR CODE HERE
 	}

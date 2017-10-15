@@ -10,7 +10,7 @@ contract Poisoned {
 	/* Constructor */
 	function Poisoned() payable {}
 
-	/* Bid function, vulnerable to attack */
+	/* Bid function */
 	function bid(uint amount) external {
 		if ((amount <= this.balance) && (target != address(0))) {
 			AuctionInterface _target = AuctionInterface(target);
