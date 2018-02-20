@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity 0.4.19;
 
 import "./AuctionInterface.sol";
 
@@ -15,6 +15,13 @@ contract NotPoisoned {
 		if ((amount <= this.balance) && (target != address(0))) {
 			AuctionInterface _target = AuctionInterface(target);
 			_target.bid.value(amount)();
+		}
+	}
+
+	function reduceBid() external {
+		if (target != address(0)) {
+			AuctionInterface _target = AuctionInterface(target);
+			_target.reduceBid();
 		}
 	}
 

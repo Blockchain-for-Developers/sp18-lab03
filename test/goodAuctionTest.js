@@ -4,6 +4,7 @@ const GoodAuction = artifacts.require("./GoodAuction.sol");
 const Poisoned = artifacts.require("./Poisoned.sol");
 const NotPoisoned = artifacts.require("./NotPoisoned.sol");
 
+
 contract('GoodAuctionTest', function(accounts) {
 	const args = {_bigAmount: 99999999999999, _smallAmount: 200,
 		_biggerSmallAmount: 300, _zero: 0};
@@ -177,6 +178,44 @@ contract('GoodAuctionTest', function(accounts) {
 		});
 	});
 
+	describe('~Modifiers and Overflow Attack Surface~', function() {
+
+		beforeEach(async function() {
+			poisoned = await Poisoned.new({value: args._bigAmount});
+			await poisoned.setTarget(good.address);
+		});
+
+		it("The good auction should not let address who is not highest bidder decrement the standing bid",
+			async function() {
+				await notPoisoned.bid(args._smallAmount);
+				await poisoned.reduceBid();
+				let highestBid = await good.getHighestBid.call();
+				assert.equal(args._smallAmount, highestBid.valueOf());
+		});
+		it("The good auction should reduce the bid when highest bidder call reduceBid",
+			async function() {
+				await notPoisoned.bid(args._smallAmount);
+				await notPoisoned.reduceBid();
+				let highestBid = await good.getHighestBid.call();
+				assert.equal((args._smallAmount - 1), highestBid.valueOf());
+		});
+		it("The good auction should refund highest bidder when they reduce their bid",
+			async function() {
+				await notPoisoned.bid(args._smallAmount);
+				await notPoisoned.reduceBid();
+				let notPoisonedBalance = await notPoisoned.getBalance.call();
+				assert.equal((args._bigAmount - args._smallAmount + 1), notPoisonedBalance.valueOf());
+		});
+		it("The good auction should not let overflow occur",
+			async function() {
+				let value = 0;
+				await notPoisoned.bid(value);
+				await notPoisoned.reduceBid();
+				let highestBid = await good.getHighestBid.call();
+				assert.equal(0, highestBid.valueOf());
+		});
+	});
+
 	/* Need a separate contract to test external calls to non-existent methods */
 	// describe('~Fallback Function~', function() {
 	// 	it("The auction's fallback function should allow fund retrieval",
@@ -189,4 +228,6 @@ contract('GoodAuctionTest', function(accounts) {
 	// 				"some balance has been spent");
 	// 	});
 	// });
+
+
 });

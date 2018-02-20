@@ -137,4 +137,41 @@ contract('BadAuctionTest', function(accounts) {
 					"same highest bidder as before");
 		});
 	});
+
+	describe('~Modifiers and Overflow Attack Surface~', function() {
+
+		beforeEach(async function() {
+			poisoned = await Poisoned.new({value: args._bigAmount});
+			await poisoned.setTarget(bad.address);
+		});
+
+		it("The bad auction should let anybody decrement the standing bid",
+			async function() {
+				await notPoisoned.bid(args._smallAmount);
+				await poisoned.reduceBid();
+				let highestBid = await bad.getHighestBid.call();
+				assert.equal((args._smallAmount - 1), highestBid.valueOf());
+		});
+		it("The bad auction should refund highest bidder when they reduce their bid",
+			async function() {
+				await notPoisoned.bid(args._smallAmount);
+				await poisoned.reduceBid();
+				let notPoisonedBalance = await notPoisoned.getBalance.call();
+				assert.equal((args._bigAmount - args._smallAmount + 1), notPoisonedBalance.valueOf());
+		});
+		it("The bad auction should let overflow occur",
+			async function() {
+				let value = 0;
+				await notPoisoned.bid(value);
+				try {
+					await poisoned.reduceBid();
+					let highestBid = await bad.getHighestBid.call();
+					assert.equal(-1, highestBid);
+				}
+				catch(err) {
+					let highestBid = await bad.getHighestBid.call();
+					assert.equal(0, highestBid.valueOf());
+				}
+		});
+	});
 });
