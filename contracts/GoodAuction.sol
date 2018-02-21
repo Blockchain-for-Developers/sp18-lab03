@@ -35,21 +35,24 @@ contract GoodAuction is AuctionInterface {
 
 	/* 	Consider implementing this modifier
 		and applying it to the reduceBid function 
-		you fill in below. Only the highest bidder
-		should be able to reduce their bid, right?  */
+		you fill in below. */
 	modifier canReduce() {
 		_;
 	}
 
 
+	/*  Rewrite reduceBid from BadAuction to fix
+		the security vulnerabilities. Should allow the
+		current highest bidder only to reduce their bid amount */
 	function reduceBid() external {}
 
 
-	/* 	Remember. This fallback function
+	/* 	Remember this fallback function
 		gets invoked if somebody calls a
 		function that does not exist in this
-		contract. How do we send people 
-		their money back?  */
+		contract. But we're good people so we don't
+		want to profit on people's mistakes.
+		How do we send people their money back?  */
 
 	function () payable {
 		// YOUR CODE HERE
